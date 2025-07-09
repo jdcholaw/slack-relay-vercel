@@ -4,10 +4,25 @@ export default async function handler(req, res) {
   }
 
   const body = req.body;
+  const eventType = body?.type || '';
+  const metadata = body?.data?.metadata || {};
 
-  const message = {
-    text: `📞 Voiceflow 통화 종료 알림\n- 발신자: ${body?.data?.metadata?.userNumber || '(정보 없음)'}\n- 종료 사유: ${body?.data?.endReason || '(없음)'}`
-  };
+  let slackMessage;
+
+  if (eventType === 'runtime.call.start') {
+    // 📞 통화 시작 알림
+    slackMessage = {
+      text: `📞 *JDCHO 새 통화 시작됨!*\n- 발신자: ${metadata.userNumber || '(정보 없음)'}\n- 시작 시각: ${new Date().toLocaleString()}`
+    };
+  } else if (eventType === 'runtime.call.end') {
+    // 📴 통화 종료 알림
+    slackMessage = {
+      text: `📞 *JDCHO 통화 종료 알림*\n- 발신자: ${metadata.userNumber || '(정보 없음)'}\n- 종료 사유: ${body?.data?.endReason || '(없음)'}\n- 종료 시각: ${new Date().toLocaleString()}`
+    };
+  } else {
+    // 🔘 예외 상황 무시
+    return res.status(200).json({ ignored: true });
+  }
 
   try {
     const slackRes = await fetch(process.env.SLACK_WEBHOOK_URL, {
@@ -15,7 +30,7 @@ export default async function handler(req, res) {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(message)
+      body: JSON.stringify(slackMessage)
     });
 
     console.log('Slack status:', slackRes.status);
