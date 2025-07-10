@@ -22,6 +22,8 @@ export default async function handler(req, res) {
 🕓 시각: ${new Date().toLocaleString("ko-KR")}
 `;
 
+  console.log('[🔍 Slack 최종 메시지]', text);
+  
   try {
     await fetch(process.env.SLACK_WEBHOOK_URL, {
       method: 'POST',
