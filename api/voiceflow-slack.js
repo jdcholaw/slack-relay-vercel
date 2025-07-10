@@ -22,6 +22,8 @@ export default async function handler(req, res) {
 🕓 시각: ${new Date().toLocaleString("ko-KR")}
 `;
 
+  const text = `📢 슬랙 하드코딩 테스트입니다. 시스템은 살아 있습니다.`;
+  
   console.log('[🔍 Slack 최종 메시지]', text);
   
   try {
