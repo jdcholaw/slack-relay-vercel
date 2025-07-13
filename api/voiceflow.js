@@ -17,8 +17,7 @@ export default async function handler(req, res) {
   } else if (eventType === 'runtime.call.end') {
     // 📴 통화 종료 알림
     slackMessage = {
-      text: `📞 *JDCHO 통화 종료 알림*\n- 발신자: ${metadata.userNumber || '(정보 없음)'}\n- 종료 사유: ${body?.data?.endReason || '(없음)'}\n- 종료 시각: ${new Date().toLocaleString()}`
-    };
+      text: `📞 JDCHO 통화 종료 알림\n- 발신자: ${metadata.userNumber || '(정보 없음)'}\n- 종료 사유: ${body?.data?.endReason || '(없음)'}\n- 종료 시각: ${new Date().toLocaleString()}\n\n🔍 DEBUG metadata: ${JSON.stringify(metadata, null, 2)}`
   } else {
     // 🔘 예외 상황 무시
     return res.status(200).json({ ignored: true });
